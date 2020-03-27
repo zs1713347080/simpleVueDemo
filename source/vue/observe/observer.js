@@ -38,8 +38,10 @@ export class Observer{
 export function defineReactive(data,key,value){
     //递归观察
     let childOb = observe(value)
-    let dep = new Dep()
+    let dep = new Dep(key)
     Object.defineProperty(data,key,{
+        enumerable: true,
+        configurable: true,
         get(){
             if(Dep.target){
                 dep.addSub(Dep.target);

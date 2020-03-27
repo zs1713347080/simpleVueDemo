@@ -1,5 +1,6 @@
 
 
+const _toString = Object.prototype.toString
 
 export function makeMap(str,expectsLowerCase){          //用于将枚举的标签存到map中，用于以后判断
     const map = Object.create(null);
@@ -27,7 +28,9 @@ export function isUndef (v) {
   return v === undefined || v === null
 }
 
-
+export function isTrue(v){
+  return v===true
+}
 
 /**
  * Check if value is primitive.     基本类型
@@ -40,4 +43,16 @@ export function isPrimitive (value) {
     typeof value === 'symbol' ||
     typeof value === 'boolean'
   )
+}
+
+export function toString(val){
+  return val == null
+    ? ''
+    : Array.isArray(val) || (isPlainObject(val) && val.toString === _toString )
+      ? JSON.stringify(val, null, 2)      //对象或者数组
+      : String(val)                       //字符串
+}
+
+export function isPlainObject (obj) {
+  return _toString.call(obj) === '[object Object]'
 }

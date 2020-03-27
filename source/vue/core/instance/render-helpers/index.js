@@ -1,7 +1,7 @@
 
 import { renderList } from './render-list'
 import { createTextVNode, createEmptyVNode } from '../../vdom/vnode'
-
+import { toString } from '../../../shared/util'
 import { markOnce, renderStatic } from './render-static'
 
 export function installRenderHelpers(target){

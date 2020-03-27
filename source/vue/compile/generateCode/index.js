@@ -101,10 +101,10 @@ export function genFor(el,state,altGen,altHelper){
     const iterator2 = el.iterator2 ? `,${el.iterator2}` : ''
 
     el.forProcessed = true; // avoid recursion
-    return (altHelper || '_l') + "((" + exp + ")," +
-      "function(" + alias + iterator1 + iterator2 + "){" +
-        "return " + ((altGen || genElement)(el, state)) +
-      '})'
+    return `${altHelper || '_l'}((${exp}),` +
+    `function(${alias}${iterator1}${iterator2}){` +         //以函数参数的方式保留循环需要的变量，以便子节点引用
+      `return ${(altGen || genElement)(el, state)}` +
+    '})'
 }
 
 function maybeComponent(el){         //判断这个节点是不是组件节点
@@ -121,9 +121,8 @@ function genIfConditions(conditions, state, altGen, altEmpty){                  
         return altEmpty || `_e()`           //没有if判定条件
     }   
     const condition = conditions.shift();
-    console.log(condition.exp,'---------------')
     if(condition.exp) {
-        return `(${ifTrue(condition.exp)})?${
+        return `(${condition.exp})?${
             genTernaryExp(condition.block)
         }:${
             genIfConditions(conditions, state, altGen, altEmpty)

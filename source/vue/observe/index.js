@@ -4,6 +4,8 @@ import { Dep } from "./dep";
 
 export function initState(vm){
     let opts = vm.$options
+
+    if (opts.methods) initMethods(vm, opts.methods)
     if(opts.data){
         initData(vm);
     }
@@ -65,5 +67,12 @@ function initWatch(vm){
     let watch = vm.$options.watch
     for(let key in watch){
         createWatcher(vm,key,watch[key])
+    }
+}
+
+function initMethods(vm, methods){
+    //源码在这里有一个名字的冲突的校验
+    for(const key in methods){
+        vm[key] = typeof methods[key] !== 'function' ? null : vm[key].call(vm)  //将函数中的this指向改为vue实例
     }
 }

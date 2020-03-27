@@ -26,7 +26,6 @@ export function renderList (val, render){
             ret[i] = render(val[i], key, i)
         }
     }
-    console.log(ret,'\nrender-list的返回值')
     return ret ? ret : []
 }
 

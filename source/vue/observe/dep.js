@@ -1,7 +1,8 @@
-let id = 0
+let uid = 0
 export class Dep{
-    constructor(){
-        this.id = id++;
+    constructor(key){
+        this.key = key
+        this.id = uid++;
         this.subs = [];
         this.watcherIdSet = {}
     }
@@ -13,7 +14,6 @@ export class Dep{
     }
     notify(){
         const subs = this.subs.slice();
-        subs.sort((a,b)=>a.id-b.id)
         for(let i = 0,l = this.subs.length;i<l;i++){
             subs[i].update();
         }

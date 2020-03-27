@@ -1,9 +1,16 @@
-import { Vue } from "../source/vue/index"
+import Vue from "../source/vue/index"
 
 let vm = new Vue({
     template:
         `<div>
-            <span v-for="(item,key) in sz">{{item}}</span>
+            <span v-for="(item,key) in sz">
+                <div v-if="key===0" style="color:red">
+                    {{item}}
+                </div>
+                <div>
+                    {{item}}
+                </div>
+            </span>
             <div>111</div>
         </div>`,
     el:'#app',
@@ -23,9 +30,6 @@ let vm = new Vue({
         object:function(newValue,oldValue){
             console.log('监听到数据变化',newValue,oldValue)
         }
-        // bb:function(newValue,oldValue){
-        //     console.log('监听到数据变化',newValue,oldValue)
-        // }
     },
     computed:{
         ppp(){
@@ -34,12 +38,10 @@ let vm = new Vue({
     }
 })
 setTimeout(function(){
+    console.log('---------------------------------------')
+    console.log('修改数据')
     vm.bb = 'bbbb'
-    vm.if = false
-},0)
-
-
-
-let my = `with(this){return _c('div',[_l((sz),function(item,key){return _c('span',[_v(_s(item))])})],2)}`
-let vv = `with(this){return _c('div',_l((sz),function(item,key){return _c('span',[_v(_s(item))])}),0)} `
+    vm.Vif = false
+    vm.sz = [4,5]
+},1000)
 

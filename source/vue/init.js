@@ -1,5 +1,6 @@
 import { initLifecycle } from "./lifecycle";
 import { initRender } from "./render";
+import { initState } from "./observe";
 
 
 let uid = 0
@@ -18,7 +19,7 @@ export function initMixin(Vue){
 
         // console.log('vm.prototype',vm)
         // debugger
-        console.log('vm.constructor',vm.constructor.options)
+        console.log('vue实例对象',vm)
         //expose real self
 
         vm._self = vm;
@@ -26,11 +27,11 @@ export function initMixin(Vue){
         initLifecycle(vm)               //初始化生命周期的一些状态
         // initEvents(vm)               //事件部分逻辑先忽略
         initRender(vm)          
+        initState(vm)
 
 
         if(vm.$options.el){ //有挂载点的话调用mounted
-            console.log(vm)
-            // vm.$mount(vm.$options.el);
+            vm.$mount(vm.$options.el);
         }   
     }
 }

@@ -71,7 +71,6 @@ export const { compile, compileToFunctions } = createCompiler(baseOptions)      
         //前面进行环境的判断，环境能力的检测
         
         const compiled = compile(template, options)             //调用compile函数进行编译
-        console.log(compiled.render,'\nrender函数字符串')
         //判断编译是否有error   tips 等，以便做出相应的提示
         return {
             render:createFunction(compiled.render,'创建render函数出错'),

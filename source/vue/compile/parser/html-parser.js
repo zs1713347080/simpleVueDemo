@@ -70,7 +70,6 @@ function getShouldDecode (href) {                               //检测是否�
 //工具函数部分
 
 export function parseHTML(html,options){
-    console.log('初始template字符串\n',html)
     const stack = []        //用于记录入栈出栈的标签，好一对匹配开标签和闭合标签
     let index = 0;
     let last, lastTag;      //lasttag记录栈顶的元素标签名

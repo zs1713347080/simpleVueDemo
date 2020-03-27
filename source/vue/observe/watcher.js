@@ -13,7 +13,7 @@ export class Watcher{
      */
     //          vm,key,     handler,    {user:true}
     //          vm,cb       ,()=>{}    ,{lazy:true}             计算属性
-    constructor(vm,exprOrFn,cb = ()=>{},opts={}){
+    constructor(vm,exprOrFn,cb = ()=>{},opts={},isRenderWatcher){
         this.vm = vm;
         this.exprOrFn = exprOrFn;
         if(typeof exprOrFn==='function'){
