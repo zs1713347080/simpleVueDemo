@@ -25,9 +25,9 @@
 |	|	|	|instance
 |	|	|	|	|render-helpers					//render过程需要的函数
 |	|	|	|	|	-index.js				//定义了往vue原型上挂载render过程需要的函数的函数
-|   |   |   |   |   -render-list.js			//渲染list的时候需要的函数
-|   |   |   |   |   -render-static.js		//渲染静态节点的时候需要的函数
-|   |   |   |util					//这里应该定义的是核心相关的工具方法
+|	|	|	|	|	-render-list.js			//渲染list的时候需要的函数
+|	|	|	|	|	-render-static.js		//渲染静态节点的时候需要的函数
+|	|	|	|util					//这里应该定义的是核心相关的工具方法
 |	|	|	|	-options.js				//空的
 |	|	|	|vdom
 |	|	|	|	|modules			//目前是空的
