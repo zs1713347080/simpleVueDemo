@@ -2,7 +2,7 @@ import { createEmptyVNode } from "./core/vdom/vnode";
 import { Watcher } from "./observe/watcher";
 
 
-export function initLifecycle(vm){
+export function initLifecycle(vm){                          //初始化生命周期状态
     const options = vm.$options
 
     //locate first non-abstract parent//找到最近的一个抽象父级
@@ -32,12 +32,10 @@ export function initLifecycle(vm){
 
 export function lifecycleMixin(Vue){        //混入生命周期方法
     Vue.prototype._update = function(vnode, hydrating){
-        console.log('最新的vnode',vnode,hydrating)
 
         const vm = this;
         const preEl = vm.$el                        //旧的 DOM 根节点
         const preVnode = vm._vnode                  //旧的virtual DOM 根节点
-        // const restoreActiveInstance = setActiveInstance(vm) //暂时不明白干嘛用的
 
         vm._vnode = vnode //将新的vnode记录到实例上
         //使用原型上的__patch__方法，该方法在初始化
@@ -60,7 +58,6 @@ export function mountComponent(vm, el, hydrating){
     vm.$el = el;
     if(!vm.$options.render){
         vm.$options.render = createEmptyVNode           //如果没有render函数就造个空节点 
-        //源码在这边会打印一些错误信息
     }
 
     callHook(vm, 'beforeMount')                           //调用生命周期钩子函数
@@ -74,12 +71,7 @@ export function mountComponent(vm, el, hydrating){
         }
     }
 
-    new Watcher(vm, updateComponent, null, {
-        before () {
-            if(vm._isMounted &&!vm._isDestroyed){
-
-            }
-    }}, true)       //创建渲染watcher
+    new Watcher(vm, updateComponent, null, {}, true)       //创建渲染watcher
 
     hydrating = false;
 

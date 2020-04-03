@@ -1,8 +1,3 @@
-import { isReservedTag } from '../../platform/web/util/element'
-
-function ifTrue(param){
-    return param?true:false
-}
 
 export function generate(ast,options){
     const state = new CodegenState(options)
@@ -27,8 +22,6 @@ export function genElement (el, state){
 
     if(el.staticRoot && !el.staticProcessed){                       //是静态节点并且未被生成过                   
         return genStatic(el, state)
-    } else if (el.once && !el.onceProcessed){
-        return genOnce(el, state)
     } else if (el.for && !el.forProcessed){
         return genFor(el,state)
     } else if (el.if && !el.ifProcessed) {
@@ -36,23 +29,16 @@ export function genElement (el, state){
     } else if (el.tag === 'template' && !state.pre){
         return genChildren(el, state) || 'void 0'
     } else {
-        //组件或者普通节点
         let code;
-        if(el.component){
-            code = genComponent(el.component, el, state)
-        } else {
-            let data
-            if(!el.plain || (el.pre && maybeComponent(el))){
-                data = genData(el,state)
-            }
+        let data
+        data = genData(el,state)
 
-            const children = el.inlineTemplate ? null : genChildren(el,state,true)
-            code = `_c('${el.tag}'${
-                data?`,${data}` : ''
-            }${
-                children ? `,${children}` : ''
-            })`
-        }
+        const children = genChildren(el,state,true)
+        code = `_c('${el.tag}'${
+            data?`,${data}` : ''
+        }${
+            children ? `,${children}` : ''
+        })`
         return code
 
     }
@@ -71,29 +57,6 @@ function genStatic(el, state){
     })`
 }
 
-function genOnce (el, state){
-    el.onceProcessed = true
-    if(el.if && el.ifProcessed){
-        return genIf(el,state)
-    } else if (el.staticInFOr){             //处于v-for循环中的static节点
-        let key = ''
-        let parent = el.parent;
-        while(parent){
-            if(parent.for){
-                key = parent.key
-                break;
-            }
-            parent = parent.parent
-        }
-        if(!key){
-            //源码这里会提示v-once必须在v-for中使用
-            return genElement(el, state)            //执行这个函数就相当于让v-once无效了
-        }
-    } else {
-        return genStatic(el, state)
-    }
-}
-
 export function genFor(el,state,altGen,altHelper){
     const exp = el.for;
     const alias = el.alias;
@@ -105,10 +68,6 @@ export function genFor(el,state,altGen,altHelper){
     `function(${alias}${iterator1}${iterator2}){` +         //以函数参数的方式保留循环需要的变量，以便子节点引用
       `return ${(altGen || genElement)(el, state)}` +
     '})'
-}
-
-function maybeComponent(el){         //判断这个节点是不是组件节点
-    return !!el.component || !isReservedTag(el.tag)
 }
 
 export function genIf(el,state,altGen,altEmpty){
@@ -135,26 +94,21 @@ function genIfConditions(conditions, state, altGen, altEmpty){                  
     function genTernaryExp (el) {
         return altGen
           ? altGen(el, state)
-          : el.once
-            ? genOnce(el, state)
-            : genElement(el, state)
+          : genElement(el, state)
       }
 }
 
-export function genChildren (el,state,checkSkip,altGenElement,altGenNode){                          //整体逻辑没明白  ♥♥♥♥♥♥♥♥♥♥
+export function genChildren (el,state,checkSkip,altGenElement,altGenNode){ //处理子节点
     const children = el.children;
     if(children.length) {               //如果有子节点 
         const el = children[0];
         //优化v-for子节点只有一个的情况
         if(children.length === 1 && el.for && el.tag !== 'template'){
-            const normalizationType = checkSkip 
-                ? maybeComponent(el) ? `,1` : `,0`      //如果是组件就传入1 不是就传入0
-                : ``
             return `${(altGenElement || genElement)}`
         }
 
         const normalizationType = checkSkip
-            ? getNormalizationType(children, maybeComponent)
+            ? getNormalizationType(children)
             : 0
         const gen = altGenNode || genNode
         return `[${children.map(c => gen(c, state)).join(',')}]${
@@ -166,7 +120,7 @@ export function genChildren (el,state,checkSkip,altGenElement,altGenNode){      
 //0代表不需要标准化
 //1代表需要一般标准化（可能是一层嵌套数组）
 //2代表需要完全标准化
-function getNormalizationType (children, maybeComponent){
+function getNormalizationType (children){
     let res = 0
 
     for(let i = 0;i<children.length; i++){
@@ -178,9 +132,6 @@ function getNormalizationType (children, maybeComponent){
             res = 2
             break
         }
-        if(maybeComponent(el) || (el.ifConditions && el.ifConditions.some(c => maybeComponent(c.block)))){                      //子节点有是组件的
-            res = 1
-        }
     }
     return res
 }
@@ -190,7 +141,7 @@ function needsNormalization (el) {
     return el.for !== undefined || el.tag === 'template' || el.tag === 'slot'
   }
 
-  function genNode (node, state) {
+  function genNode (node, state) {                      //处理节点
     if (node.type === 1) {
       return genElement(node, state)
     } else if (node.type === 3 && node.isComment) {
@@ -219,51 +170,13 @@ function needsNormalization (el) {
       .replace(/\u2029/g, '\\u2029')
   }
 
-  function genComponent(componentName,el,state){                                    //完全不懂
-    const children = el.inlineTemplate ? null : genChildren(el, state, true)
-    return `_c(${componentName},${genData(el, state)}${
-        children ? `,${children}` : ``
-    })`
-  }
   function genData(el,state){
     let data = '{'
     //key
     if(el.key){
         data += `key:${el.key},`
     }
-    //pre
-    if(el.pre){
-        data += `pre:true,`
-    }
-    //record original tag name for components using "is" attribute
-    if(el.component){
-        data += `tag:${el.tag},`
-    }
 
-    // if(el.attrs){
-    //      data += `attrs:${genProps}`
-    // }
-    
-    
-  // component v-model
-//   if (el.model) {
-//     data += `model:{value:${
-//       el.model.value
-//     },callback:${
-//       el.model.callback
-//     },expression:${
-//       el.model.expression
-//     }},`
-//   }
-
-
-  // inline-template
-//   if (el.inlineTemplate) {
-//     const inlineTemplate = genInlineTemplate(el, state)
-//     if (inlineTemplate) {
-//       data += `${inlineTemplate},`
-//     }
-//   }
   data = data.replace(/,$/, '') + '}'
    return data
 }

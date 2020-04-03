@@ -1,7 +1,7 @@
 import { observe } from "./observer";
 
 let oldArrayPrototypeMethods = Array.prototype;
-export let arrayMethods = Object.create(oldArrayPrototypeMethods)
+export let arrayMethods = Object.create(oldArrayPrototypeMethods)               //克隆一个array的原型
 
 let methods = [
     'push',
@@ -13,7 +13,7 @@ let methods = [
     'splice'
 ]
 methods.forEach(methdod=>{
-    arrayMethods[methdod] = function (...args){
+    arrayMethods[methdod] = function (...args){                         //对原型上的会改变数组本身的方法进行劫持
         let result = oldArrayPrototypeMethods[methdod].apply(this,args)
 
         let instered;
@@ -28,7 +28,7 @@ methods.forEach(methdod=>{
             default:
                 break;
         }
-        if(instered) {observeArray(instered)};
+        if(instered) {observeArray(instered)};                      //对新加入的数据进行观察
 
         //监听到上述能改变数组数据的变化，通知数组对应的Observer实例中的dep调用notify方法
         this.__ob__.dep.notify();
@@ -40,7 +40,7 @@ export function observeArray(instered){
         observe(instered[i])
     }
 }
-export function deepDependArray(value){
+export function deepDependArray(value){                 //深度观察数组
     for(let i = 0,l = value.length;i<l;i++){
         let currentItem = value[i];
         currentItem.__ob__&&currentItem.__ob__.dep.depend();

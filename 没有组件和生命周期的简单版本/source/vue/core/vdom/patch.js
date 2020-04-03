@@ -16,11 +16,6 @@ function sameVnode(a, b){
                 isDef(a.data) === isDef(b.data) &&
                 sameInputType(a, b)
             )
-            //  || (
-            //     isTrue(a.isAsyncPlaceholder) &&                  //这里好像和组件相关，就先不写了
-            //     a.asyncFactory === b.asyncFactory &&
-            //     isUndef(b.asyncFactory.error)
-            // )
         )
     )
 }
@@ -79,11 +74,6 @@ export function createPatchFunction(backend){
     }
 
     function removeAndInvokeRemoveHook(vnode, rm){
-        // if(isDef(rm) || isDef(vnode.data)){
-
-        // } else {
-        //     removeNode(vnode.elm)
-        // }
         //暂时就直接移除
         removeNode(vnode.elm)
     }
@@ -101,16 +91,6 @@ export function createPatchFunction(backend){
         }
     }
 
-    // function createComponent (vnode, insertedVnodeQueue, parentElm, refElm){
-    //     let i = vnode.data;
-    //     if (isDef(i)){
-    //         const isReactivated = isDef(vnode.componentInstance) && i.keepAlive
-    //         if(isDef(i = i.hook) && isDef(i = i.init)){
-    //             i(vnode, false)
-    //         }
-    //     }
-    // }
-
     function createElm(
         vnode,
         insertedVnodeQueue,
@@ -121,15 +101,10 @@ export function createPatchFunction(backend){
         index
     ){
         
-    if (isDef(vnode.elm) && isDef(ownerArray)) {            //不懂     ♥♥♥♥♥♥♥♥♥
+    if (isDef(vnode.elm) && isDef(ownerArray)) {
         vnode = ownerArray[index] = cloneVNode(vnode)
       }
 
-    //   vnode.isRootInsert = !nested                   //不懂  ♥♥♥♥♥♥
-
-    // if(createComponent(vnode, insertedVnodeQueue, parentElm, refElm)){          //检查是否为一个组件
-    //     return 
-    // }
 
     const data = vnode.data;
     const children = vnode.children;
@@ -138,13 +113,7 @@ export function createPatchFunction(backend){
     if(isDef(tag)){                             //有tag说明是普通节点或者组件
         //源码这里有判断和错误提示
 
-        // vnode.elm = vnode.ns
-        //     ? nodeOps.createElementNS(vnode.ns, tag)            //有ns就生成具有命名空间的节点       不考虑
-        //     : nodeOps.createElement(tag, vnode)
         vnode.elm = nodeOps.createElement(tag,vnode)
-        //源码这边对插槽进行了处理，暂时不写
-
-        //源码这里有一个分支是判断在weex平台还是web平台
         if(false){
 
         } else {
@@ -184,38 +153,28 @@ export function createPatchFunction(backend){
             return 
         }
 
-        if(isDef(vnode.elm) && isDef(ownerArray)){                      //不太明白
+        if(isDef(vnode.elm) && isDef(ownerArray)){
             vnode = ownerArray[index] = cloneVNode(vnode)
         }
 
         const elm = vnode.elm = oldVnode.elm        //新节点的elm指向老节点的elm
 
-        // if(isTrue(oldVnode.isAsyncPlaceholder)){         //不懂
 
+
+        // if(isTrue(vnode.isStatic) &&                //对于预先标记好的静态节点，不必再次生成dom
+        //     isTrue(oldVnode.isStatic) &&
+        //     vnode.key === oldVnode.key &&
+        //     (isTrue(vnode.isCloned) || isTrue(vnode.isOnce))
+        // ){
+        //     vnode.componentInstance = oldVnode.componentInstance
+        //     return 
         // }
-
-
-        if(isTrue(vnode.isStatic) &&                //对于预先标记好的静态节点，不必再次生成dom
-            isTrue(oldVnode.isStatic) &&
-            vnode.key === oldVnode.key &&
-            (isTrue(vnode.isCloned) || isTrue(vnode.isOnce))
-        ){
-            vnode.componentInstance = oldVnode.componentInstance
-            return 
-        }
 
         let i
         const data = vnode.data
-        // if (isDef(data) && isDef(i = data.hook) && isDef(i = i.prepatch)) {          //先不考虑
-        //   i(oldVnode, vnode)
-        // }
 
         const oldCh = oldVnode.children
         const ch = vnode.children
-        // if (isDef(data) && isPatchable(vnode)) {                                       //不懂
-        //   for (i = 0; i < cbs.update.length; ++i) cbs.update[i](oldVnode, vnode)
-        //   if (isDef(i = data.hook) && isDef(i = i.update)) i(oldVnode, vnode)
-        // }
 
         if(isUndef(vnode.text)){               
             if(isDef(oldCh) && isDef(ch)){
@@ -231,9 +190,6 @@ export function createPatchFunction(backend){
         } else if(oldVnode.text !== vnode.text) {
             nodeOps.setTextContent(elm, vnode.text)
         }
-        // if (isDef(data)) {
-        //   if (isDef(i = data.hook) && isDef(i = i.postpatch)) i(oldVnode, vnode)
-        // }
     }
 
     
@@ -315,13 +271,6 @@ export function createPatchFunction(backend){
     }
 
     return function patch (oldVnode, vnode, hydrating, removeOnly){
-        console.log('<<------------------------------->>')
-        console.log(oldVnode,'\n', vnode,'\n', hydrating,'\n', removeOnly)
-        console.log('<<------------------------------->>')
-        // if(isUndef(vnode)){
-        //     if (isDef(oldVnode)) invokeDestroyHook(oldVnode)
-        //     return
-        // }
 
         let isInitialPatch = false //标明是否是在mount的时候调用
         const insertedVnodeQueue = []

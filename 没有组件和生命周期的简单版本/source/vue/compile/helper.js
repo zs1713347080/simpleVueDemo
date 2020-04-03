@@ -1,4 +1,4 @@
-import { parseFilters } from "./parser/filter-parser"
+
 
 export function getAndRemoveAttr (                  //用于删除节点中的属性
     el,

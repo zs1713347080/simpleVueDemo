@@ -11,7 +11,8 @@ let vm = new Vue({
                     {{item}}
                 </div>
             </span>
-            <div>111</div>
+            <div>{{object.a}}</div>
+            <div>{{ppp}}</div>
         </div>`,
     el:'#app',
     data:{
@@ -38,10 +39,9 @@ let vm = new Vue({
     }
 })
 setTimeout(function(){
-    console.log('---------------------------------------')
-    console.log('修改数据')
     vm.bb = 'bbbb'
     vm.Vif = false
     vm.sz = [4,5]
+    vm.object.a = [4,5]
 },1000)
 

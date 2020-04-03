@@ -5,19 +5,8 @@ import { namespaceMap } from '../util/element'
 export function createElement (tagName, vnode) {
     const elm = document.createElement(tagName)
     return elm
-    // if (tagName !== 'select') {                                  //源码在这里做了一个兼容性的处理
-    //   return elm
-    // }
-    // // false or null will remove the attribute but undefined will not
-    // if (vnode.data && vnode.data.attrs && vnode.data.attrs.multiple !== undefined) {
-    //   elm.setAttribute('multiple', 'multiple')
-    // }
-    // return elm
 }
 
-// export function createElementNS (namespace, tagName) {                      //为了适应多端，咱们不考虑这个
-//     return document.createElementNS(namespaceMap[namespace], tagName)
-// }
 
 export function createTextNode(text){
     return document.createTextNode(text)
@@ -54,9 +43,4 @@ export function tagName(node){
 export function setTextContent(node, text){
     node.textContent = text
 }
-
-
-// export function setStyleScope (node, scopeId) {                  //插槽相关的暂时忽略
-//     node.setAttribute(scopeId, '')
-//   }
   

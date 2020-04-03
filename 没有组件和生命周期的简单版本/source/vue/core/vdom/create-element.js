@@ -1,5 +1,4 @@
 import VNode, { createEmptyVNode } from './vnode'
-import { isDef, isUndef } from '../../shared/util'
 
 import { normalizeChildren,simpleNormalizeChildren } from '../helpers/normalize-children'
 
@@ -47,8 +46,6 @@ export function _createElement(
             tag, data, children,
             undefined, undefined, context
         )
-    } else {
-        // vnode = createComponent(tag, data, context, children)
     }
     return vnode
 }

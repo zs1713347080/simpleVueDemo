@@ -57,14 +57,12 @@ export class Watcher{
         }
     }
     depend(){
-        console.log('调用watcher的depend方法')
         let i = this.deps.length
         while(i--){
             this.deps[i].depend();
         }
     }
     evaluate(){
-        console.log('调用watcher的evaluate方法')
         if(this.dirty){
             this.value = this.get();
             this.dirty = false;
@@ -82,17 +80,17 @@ export class Watcher{
 }
 let has = {};
 let queue = [];
-function flushQueue(){
+function flushQueue(){                  //清空延迟队列的所有方法
     queue.forEach(watcher=>watcher.run())
     has = {};
     queue = []
 }
-function queueWatcher(watcher){
+function queueWatcher(watcher){             //往延迟队列中添加
     let id = watcher.id;
     if(has[id] == null){
         has[id] = true
         queue.push(watcher);
 
-        nextTick(flushQueue)
+        nextTick(flushQueue)                //调用nextTick清空延迟队列
     }
 }

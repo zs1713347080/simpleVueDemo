@@ -1,22 +1,3 @@
-export function compiler(node,vm){
-    let childNodes = node.childNodes;
-    [...childNodes].forEach(element=>{
-        if(element.nodeType ==1 ){  //元素节点
-            compiler(element,vm)
-        } else if(element.nodeType == 3){   //文本节点
-            compilerText(element,vm)
-        }
-    })
-}
-const defaultRE = /\{\{((?:.|\r\n)+?)\}\}/g
-export function compilerText(node,vm){
-    if(!node.textString){
-        node.textString = node.textContent
-    }
-    node.textContent = node.textString.replace(defaultRE,function(...args){
-        return JSON.stringify(getValue(vm,args[1]))
-    })
-}
 export function getValue(vm,expr){
     let keys = expr.trim().split('.');
     return keys.reduce((memo,current)=>{
@@ -26,7 +7,6 @@ export function getValue(vm,expr){
 }
 import {parse} from './parser/parse.js';
 import { optimize } from './optimize'
-import { arrayMethods } from '../observe/array.js';
 import { generate } from './generateCode/index'
 
 let baseOptions = 'baseoptions'
@@ -55,7 +35,6 @@ export const { compile, compileToFunctions } = createCompiler(baseOptions)      
             //这一步执行的merge
 
             const compiled = baseCompile(template,options)          //这一步才是真正的调用编译的方法
-            console.log('ast语法树',compiled.ast)
             return compiled  //返回编译结果
         }
         return {
