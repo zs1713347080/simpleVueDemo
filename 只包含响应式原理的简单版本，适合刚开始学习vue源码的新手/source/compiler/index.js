@@ -1,8 +1,4 @@
-
-
-
 const defaultRE = /\{\{((?:.|\r\n)+?)\}\}/g
-
 function compilerText(node,vm){
     if(!node.reg){
         node.reg = node.textContent
@@ -14,8 +10,6 @@ function compilerText(node,vm){
         return func.call(vm)                //用表达式中的内容创建一个vm作用域的函数执行得出结果，将文本中的内容替换
     })
 }
-
-
 export function compiler (node, vm){                //深度遍历文档节点
     let childNodes = node.childNodes;
     //将类数组转化成数组

@@ -13,6 +13,8 @@ let vm = new Vue({
     }
 })
 
+vm.aaa = 333
+
 setTimeout(function(){
     vm.aaa = '222'
     console.log('改变',vm)

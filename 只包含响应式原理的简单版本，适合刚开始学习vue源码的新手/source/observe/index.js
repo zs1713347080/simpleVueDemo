@@ -15,7 +15,6 @@ export function initState(vm){
         initWatch(vm);
     }
 }
-
 function initData(vm) {
     var data = vm.$options.data;
     data = vm._data = typeof data === 'function'        //在vm实例上创建一个_data属性表示私有的data
@@ -28,8 +27,6 @@ function initData(vm) {
     }
     observe(vm._data)
 }
-
-
 function proxy(vm,source,key){              //代理属性的工具函数
     Object.defineProperty(vm,key,{
         get(){
@@ -40,11 +37,9 @@ function proxy(vm,source,key){              //代理属性的工具函数
         }
     })
 }
-
 function initComputed(vm, computed) {
 
 }
-
 function initWatch (vm) {
 
 }

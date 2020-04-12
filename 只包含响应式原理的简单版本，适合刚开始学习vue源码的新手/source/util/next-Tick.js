@@ -13,7 +13,6 @@ export function nextTick(cb) {
         timerFunc()
     }
 }
-
 if(Promise) {                                           //先进行浏览器能力判断，决定使用哪一种异步
     timerFunc = () => { 
         Promise.resolve().then(flushCallbacks)

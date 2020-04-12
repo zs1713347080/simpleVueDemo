@@ -1,5 +1,4 @@
 let id = 0
-
 export class Dep {
     constructor () {
         this.id = id++;
@@ -17,20 +16,12 @@ export class Dep {
             this.subs[i].update()
         }
     }
-    depend(){
-        if(Dep.target) {
-            Dep.target.addDep(this)         //这个是可以和watcher互相记忆对方
-        }
-    }
 }
-
 const stack = []
-
 export function pushTarget(watcher) {               //将传入的watcher传入栈顶
     Dep.target = watcher;
     stack.push(watcher)
 }
-
 export function popTarget(){                        //栈顶watcher退栈
     stack.pop();
     Dep.target = stack[stack.length -1]

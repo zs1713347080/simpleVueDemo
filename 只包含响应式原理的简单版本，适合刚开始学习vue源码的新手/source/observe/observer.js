@@ -1,14 +1,10 @@
 import { Dep } from "./dep";
-
-
-
 export function observe(data){                  //响应式定义的入口函数
     if (typeof data!=='object' || data == null) {
         return   //不是对象或者是null就不需要观察
     }
     return new Observer(data)
 }
-
 class Observer{
     constructor(value) {
         this.value = value;
@@ -32,11 +28,8 @@ class Observer{
         }
     }
 }
-
-
 export function defineReactive(obj, key) {
     let value = obj[key]
-    // let childOb = observe(value)
     let dep = new Dep();
     Object.defineProperty(obj,key,{
         get(){

@@ -32,23 +32,18 @@ Vue.prototype._update = function () {               //模拟对dom的更新，�
 
     el.appendChild(node)        //将处理好的文档碎片再放回来
 }
-
-
 Vue.prototype.$mount = function () {
-    console.log('mount')
     let vm = this;
     let el = vm.$options.el;
     el = vm.$el = query(el);                //获得挂载点
 
 
     let updateComponent = () => {               //模拟更新
+        console.log('update')
         vm._update();
     }
     new Watcher(vm, updateComponent, undefined, undefined, true)        //创建渲染watcher
 }
-
-
-
 export function query(el){
     if(typeof el === 'string'){
         return document.querySelector(el);
